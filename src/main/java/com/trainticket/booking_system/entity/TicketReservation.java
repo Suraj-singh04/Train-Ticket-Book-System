@@ -1,20 +1,32 @@
 package com.trainticket.booking_system.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.Getter;
+import lombok.Setter;
 
-@Getter
 @Entity
+@Table(name = "ticket_reservations")
+@Getter
+@Setter
 public class TicketReservation {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "booking_id")
+    private Booking booking;
+
     private String passengerName;
     private int passengerAge;
     private String assignedCoachLabel;
     private int assignedSeatNumber;
 
-    public TicketReservation(String passengerName, int passengerAge, String assignedCoachLabel, int assignedSeatNumber) {
-        this.passengerName = passengerName;
-        this.passengerAge = passengerAge;
-        this.assignedCoachLabel = assignedCoachLabel;
-        this.assignedSeatNumber = assignedSeatNumber;
-    }
 }
