@@ -11,10 +11,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
 
 @Entity
 @Table(name = "trains")
+@Getter
+@Setter
 public class Train {
 
     @Id
@@ -33,18 +37,4 @@ public class Train {
         this.trainId = trainId;
         this.trainName = trainName;
     }
-
-
-    public String getTrainId() {
-        return trainId;
-    }
-
-    public String getTrainName() {
-        return trainName;
-    }
-
-    public List<Coach> getCoaches() {
-        return coaches;
-    }
-
 }

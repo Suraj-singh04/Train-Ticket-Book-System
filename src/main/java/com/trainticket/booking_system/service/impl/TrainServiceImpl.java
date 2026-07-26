@@ -42,4 +42,39 @@ public class TrainServiceImpl implements TrainService{
                     train.getTrainName()))
                 .toList();
     }
+
+    @Override
+    public TrainResponse getTrainById(String trainId) {
+        Train train = trainRepository.findById(trainId)
+                .orElseThrow(()-> new RuntimeException("Train not found with id: " + trainId));
+        
+        return new TrainResponse(
+            train.getTrainId(),
+            train.getTrainName()
+        );
+    }
+
+    @Override
+    public TrainResponse updateTrain(String trainId, CreateTrainRequest request) {
+
+        Train train = trainRepository.findById(trainId)
+                .orElseThrow(()-> new RuntimeException("Train not found with id: " + trainId));
+
+        train.setTrainName(request.getTrainName());
+
+        Train updatedTrain = trainRepository.save(train);
+
+        return new TrainResponse(
+            updatedTrain.getTrainId(),
+            updatedTrain.getTrainName()
+        );
+    }
+
+    @Override
+    public void deleteTrain(String trainId) {
+        Train train = trainRepository.findById(trainId)
+                .orElseThrow(()-> new RuntimeException("Train not found with id: " + trainId));
+
+        trainRepository.delete(train);
+    }
 }
