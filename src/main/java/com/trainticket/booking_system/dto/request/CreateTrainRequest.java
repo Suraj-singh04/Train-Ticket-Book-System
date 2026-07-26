@@ -1,18 +1,24 @@
 package com.trainticket.booking_system.dto.request;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class CreateTrainRequest {
-    private String trainId;
+
+    @NotBlank(message = "Train number is required")
+    private String trainNumber;
+
+    @NotBlank(message = "Train name is required")
     private String trainName;
 
     public CreateTrainRequest(){
     }
 
-    public String getTrainId() {
-        return trainId;
+    public String getTrainNumber() {
+        return trainNumber;
     }
 
-    public void setTrainId(String trainId) {
-        this.trainId = trainId;
+    public void setTrainNumber(String trainNumber) {
+        this.trainNumber = trainNumber;
     }
 
     public String getTrainName() {

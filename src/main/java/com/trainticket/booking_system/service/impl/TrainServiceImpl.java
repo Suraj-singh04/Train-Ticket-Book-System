@@ -21,7 +21,7 @@ public class TrainServiceImpl implements TrainService{
     @Override
     public TrainResponse createTrain(CreateTrainRequest request) {
         Train train = new Train(
-            request.getTrainId(),
+            request.getTrainNumber(),
             request.getTrainName()
         );
 
@@ -29,6 +29,7 @@ public class TrainServiceImpl implements TrainService{
 
         return new TrainResponse(
             savedTrain.getTrainId(),
+            savedTrain.getTrainNumber(),
             savedTrain.getTrainName()
         );
     }
@@ -39,6 +40,7 @@ public class TrainServiceImpl implements TrainService{
         return trains.stream()
                 .map(train -> new TrainResponse(
                     train.getTrainId(),
+                    train.getTrainNumber(),
                     train.getTrainName()))
                 .toList();
     }
@@ -50,6 +52,7 @@ public class TrainServiceImpl implements TrainService{
         
         return new TrainResponse(
             train.getTrainId(),
+            train.getTrainNumber(),
             train.getTrainName()
         );
     }
@@ -61,11 +64,13 @@ public class TrainServiceImpl implements TrainService{
                 .orElseThrow(()-> new RuntimeException("Train not found with id: " + trainId));
 
         train.setTrainName(request.getTrainName());
+        train.setTrainNumber(request.getTrainNumber());
 
         Train updatedTrain = trainRepository.save(train);
 
         return new TrainResponse(
             updatedTrain.getTrainId(),
+            updatedTrain.getTrainNumber(),
             updatedTrain.getTrainName()
         );
     }

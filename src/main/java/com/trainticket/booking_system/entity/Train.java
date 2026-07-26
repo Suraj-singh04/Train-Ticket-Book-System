@@ -25,6 +25,9 @@ public class Train {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String trainId;
 
+    @Column(nullable = false, unique = true)
+    private String trainNumber;
+
     @Column(nullable = false)
     private String trainName;
 
@@ -33,8 +36,8 @@ public class Train {
 
     protected Train() {}    
 
-    public Train(String trainId, String trainName) {
-        this.trainId = trainId;
+    public Train(String trainNumber, String trainName) {
+        this.trainNumber = trainNumber;
         this.trainName = trainName;
     }
 }
