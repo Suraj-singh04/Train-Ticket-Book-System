@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.trainticket.booking_system.dto.request.CreateTrainRequest;
 import com.trainticket.booking_system.dto.response.TrainResponse;
 import com.trainticket.booking_system.entity.Train;
+import com.trainticket.booking_system.exception.ResourceNotFoundException;
 import com.trainticket.booking_system.repository.TrainRepository;
 import com.trainticket.booking_system.service.TrainService;
 
@@ -48,7 +49,7 @@ public class TrainServiceImpl implements TrainService{
     @Override
     public TrainResponse getTrainById(String trainId) {
         Train train = trainRepository.findById(trainId)
-                .orElseThrow(()-> new RuntimeException("Train not found with id: " + trainId));
+                .orElseThrow(()-> new ResourceNotFoundException("Train not found with id: " + trainId));
         
         return new TrainResponse(
             train.getTrainId(),
@@ -61,7 +62,7 @@ public class TrainServiceImpl implements TrainService{
     public TrainResponse updateTrain(String trainId, CreateTrainRequest request) {
 
         Train train = trainRepository.findById(trainId)
-                .orElseThrow(()-> new RuntimeException("Train not found with id: " + trainId));
+                .orElseThrow(()-> new ResourceNotFoundException("Train not found with id: " + trainId));
 
         train.setTrainName(request.getTrainName());
         train.setTrainNumber(request.getTrainNumber());
@@ -78,7 +79,7 @@ public class TrainServiceImpl implements TrainService{
     @Override
     public void deleteTrain(String trainId) {
         Train train = trainRepository.findById(trainId)
-                .orElseThrow(()-> new RuntimeException("Train not found with id: " + trainId));
+                .orElseThrow(()-> new ResourceNotFoundException("Train not found with id: " + trainId));
 
         trainRepository.delete(train);
     }
