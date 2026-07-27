@@ -26,8 +26,9 @@ public class RouteStation {
     @JoinColumn(name = "route_id", nullable = false)
     private Route route;
 
-    @Column(nullable = false)
-    private String stationCode;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "station_id", nullable = false)
+    private Station station;
 
     @Column(nullable = false)
     private int stopOrder;
@@ -37,8 +38,8 @@ public class RouteStation {
 
     protected RouteStation() {}
 
-    public RouteStation(String stationCode, int stopOrder, int distanceFromOrigin) {
-        this.stationCode = stationCode;
+    public RouteStation(Station station, int stopOrder, int distanceFromOrigin) {
+        this.station = station;
         this.stopOrder = stopOrder;
         this.distanceFromOrigin = distanceFromOrigin;
     }

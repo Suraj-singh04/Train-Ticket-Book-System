@@ -12,9 +12,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
+import lombok.Getter;
 
 @Entity
 @Table(name = "routes")
+@Getter
 public class Route {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -27,7 +29,7 @@ public class Route {
     private String destinationStation;
 
     @OneToMany(mappedBy = "route", cascade = CascadeType.ALL, orphanRemoval = true)
-    @OrderBy("stationOrder ASC")
+    @OrderBy("stopOrder ASC")
     private List<RouteStation> orderedStations = new ArrayList<>();
 
     protected Route() {}
@@ -42,8 +44,8 @@ public class Route {
         station.setRoute(this);
     }
 
-    public String getRouteId() { return routeId; }
-    public String getOriginStation() { return originStation; }
-    public String getDestinationStation() { return destinationStation; }
-    public List<RouteStation> getOrderedStations() { return orderedStations; }
+    public void removeStation(RouteStation station) {
+        orderedStations.remove(station);
+        station.setRoute(null);
+    }
 }
