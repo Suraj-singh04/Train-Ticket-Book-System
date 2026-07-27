@@ -17,6 +17,8 @@ import com.trainticket.booking_system.dto.request.CreateTrainRequest;
 import com.trainticket.booking_system.dto.response.TrainResponse;
 import com.trainticket.booking_system.service.TrainService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/trains")
 public class TrainController {
@@ -27,7 +29,7 @@ public class TrainController {
     }
 
     @PostMapping
-    public ResponseEntity<TrainResponse> createTrain(@RequestBody CreateTrainRequest request) {
+    public ResponseEntity<TrainResponse> createTrain(@Valid @RequestBody CreateTrainRequest request) {
         TrainResponse response = trainService.createTrain(request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
