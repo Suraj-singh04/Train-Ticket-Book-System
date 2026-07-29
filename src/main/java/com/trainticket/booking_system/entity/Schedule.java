@@ -4,9 +4,10 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.DayOfWeek;
+import java.time.LocalTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -27,14 +28,41 @@ public class Schedule {
     private Route route;
 
     @Column(nullable = false)
-    private LocalDateTime departureTime;
+    private LocalTime departureTime;
 
     @Column(nullable = false)
-    private LocalDateTime arrivalTime;
+    private LocalTime arrivalTime;
 
-    @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<InventorySeat> seatInventory = new ArrayList<>();
+    @Column(nullable = false)
+    private Integer journeyDurationMinutes;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(
+            name = "schedule_days",
+            joinColumns = @JoinColumn(name = "schedule_id")
+    )
+    @Enumerated(EnumType.STRING)
+    @Column(name = "day")
+    private Set<DayOfWeek> daysOfOperation = new HashSet<>();
+
+    @Column(nullable = false)
+    private boolean active = true;
 
     protected Schedule() {}
 
+     public Schedule(
+            Train train,
+            Route route,
+            LocalTime departureTime,
+            LocalTime arrivalTime,
+            Integer journeyDurationMinutes,
+            Set<DayOfWeek> daysOfOperation
+    ) {
+        this.train = train;
+        this.route = route;
+        this.departureTime = departureTime;
+        this.arrivalTime = arrivalTime;
+        this.journeyDurationMinutes = journeyDurationMinutes;
+        this.daysOfOperation = daysOfOperation;
+    }
 }
