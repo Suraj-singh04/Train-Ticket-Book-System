@@ -1,8 +1,5 @@
 package com.trainticket.booking_system.entity;
 
-import java.util.List;
-
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -13,18 +10,24 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
 
-
-@Setter
-@Getter
 @Entity
-@Table(name = "coaches")
+@Table(name = "coaches",
+uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"train_id", "coach_number"})
+}
+)
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Coach {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -34,18 +37,29 @@ public class Coach {
     @JoinColumn(name = "train_id", nullable = false)
     private Train train;
 
-    @Column(nullable = false)
-    private String coachLabel;
+    @Column(name = "coach_number", nullable = false)
+    private String coachNumber;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private TravelClass travelClass;
+    private CoachType coachType;
 
-    @OneToMany(mappedBy = "coach", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Seat> seats = new ArrayList<>();
+    @Column(nullable = false)
+    private Integer totalSeats;
 
-    protected Coach() {}
+    @Column(nullable = false)
+    private Boolean active = true;
 
-    public enum TravelClass { SLEEPER, AC_3TIER, AC_2TIER, CHAIR_CAR }
+    public Coach(Train train,
+                 String coachNumber,
+                 CoachType coachType,
+                 Integer totalSeats) {
+
+        this.train = train;
+        this.coachNumber = coachNumber;
+        this.coachType = coachType;
+        this.totalSeats = totalSeats;
+        this.active = true;
+    }
 
 }
