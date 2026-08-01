@@ -1,5 +1,6 @@
 package com.trainticket.booking_system.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -7,9 +8,12 @@ import org.springframework.stereotype.Service;
 import com.trainticket.booking_system.dto.request.CreateCoachRequest;
 import com.trainticket.booking_system.dto.response.CoachResponse;
 import com.trainticket.booking_system.entity.Coach;
+import com.trainticket.booking_system.entity.Seat;
+import com.trainticket.booking_system.entity.SeatType;
 import com.trainticket.booking_system.entity.Train;
 import com.trainticket.booking_system.exception.ResourceNotFoundException;
 import com.trainticket.booking_system.repository.CoachRepository;
+import com.trainticket.booking_system.repository.SeatRepository;
 import com.trainticket.booking_system.repository.TrainRepository;
 import com.trainticket.booking_system.service.CoachService;
 
@@ -17,25 +21,12 @@ import com.trainticket.booking_system.service.CoachService;
 public class CoachServiceImpl implements CoachService {
     private final CoachRepository coachRepository;
     private final TrainRepository trainRepository;
+    private final SeatRepository seatRepository;
 
-    public CoachServiceImpl(CoachRepository coachRepository, TrainRepository trainRepository) {
+    public CoachServiceImpl(CoachRepository coachRepository, TrainRepository trainRepository, SeatRepository seatRepository) {
         this.coachRepository = coachRepository;
         this.trainRepository = trainRepository;
-    }
-
-    private CoachResponse mapToCoachResponse(Coach coach) {
-
-        CoachResponse response = new CoachResponse();
-
-        response.setCoachId(coach.getCoachId());
-        response.setTrainId(coach.getTrain().getTrainId());
-        response.setTrainNumber(coach.getTrain().getTrainNumber());
-        response.setCoachNumber(coach.getCoachNumber());
-        response.setCoachType(coach.getCoachType());
-        response.setTotalSeats(coach.getTotalSeats());
-        response.setActive(coach.getActive());
-
-        return response;
+        this.seatRepository = seatRepository;
     }
 
     @Override
@@ -57,6 +48,7 @@ public class CoachServiceImpl implements CoachService {
         );
 
         Coach savedCoach = coachRepository.save(coach);
+        generateSeats(savedCoach);
 
         return mapToCoachResponse(savedCoach);
     }
@@ -119,5 +111,58 @@ public class CoachServiceImpl implements CoachService {
                         new ResourceNotFoundException("Coach not found"));
         
         coachRepository.delete(coach);
+    }
+
+    
+    private CoachResponse mapToCoachResponse(Coach coach) {
+
+        CoachResponse response = new CoachResponse();
+
+        response.setCoachId(coach.getCoachId());
+        response.setTrainId(coach.getTrain().getTrainId());
+        response.setTrainNumber(coach.getTrain().getTrainNumber());
+        response.setCoachNumber(coach.getCoachNumber());
+        response.setCoachType(coach.getCoachType());
+        response.setTotalSeats(coach.getTotalSeats());
+        response.setActive(coach.getActive());
+
+        return response;
+    }
+
+    private void generateSeats(Coach coach) {
+
+        List<Seat> seats = new ArrayList<>();
+
+        for (int i = 1; i <= coach.getTotalSeats(); i++) {
+            SeatType seatType;
+            switch ((i - 1) % 5) {
+                case 0:
+                    seatType = SeatType.LOWER;
+                    break;
+                case 1:
+                    seatType = SeatType.MIDDLE;
+                    break;
+                case 2:
+                    seatType = SeatType.UPPER;
+                    break;
+                case 3:
+                    seatType = SeatType.SIDE_LOWER;
+                    break;
+                default:
+                    seatType = SeatType.SIDE_UPPER;
+            }
+
+            seats.add(new Seat(
+                    coach,
+                    i,
+                    seatType
+            ));
+        }
+
+        System.out.println("Seats created in memory: " + seats.size());
+
+        seatRepository.saveAll(seats);
+
+        System.out.println("Seats saved successfully.");
     }
 }

@@ -1,39 +1,44 @@
 package com.trainticket.booking_system.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
 
+@Entity
+@Table(name = "seats",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"coach_id", "seat_number"})
+        })
 @Getter
 @Setter
-@Entity
-@Table(name="seats")
+@NoArgsConstructor
+@AllArgsConstructor
 public class Seat {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String seatId;
 
-    @ManyToOne
-    @JoinColumn(name="coach_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "coach_id", nullable = false)
     private Coach coach;
 
+    @Column(name = "seat_number", nullable = false)
     private Integer seatNumber;
 
     @Enumerated(EnumType.STRING)
-    private BerthType berthType;
+    @Column(nullable = false)
+    private SeatType seatType;
 
-    protected Seat(){}
-}
+    @Column(nullable = false)
+    private Boolean available = true;
 
-enum BerthType {
-    LOWER, MIDDLE, UPPER, SIDE_LOWER, SIDE_UPPER
+    public Seat(Coach coach,
+                Integer seatNumber,
+                SeatType seatType) {
+
+        this.coach = coach;
+        this.seatNumber = seatNumber;
+        this.seatType = seatType;
+        this.available = true;
+    }
 }
