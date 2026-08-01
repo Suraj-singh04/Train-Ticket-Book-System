@@ -18,6 +18,4 @@ public class SeatResponse {
     private Integer seatNumber;
 
     private SeatType seatType;
-
-    private Boolean available;
 }

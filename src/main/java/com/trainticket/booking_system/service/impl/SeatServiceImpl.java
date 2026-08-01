@@ -29,7 +29,7 @@ public class SeatServiceImpl implements SeatService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Coach not found"));
 
-        return seatRepository.findByCoach(coach)
+        return seatRepository.findByCoachOrderBySeatNumberAsc(coach)
                 .stream()
                 .map(this::mapToSeatResponse)
                 .toList();
@@ -54,8 +54,7 @@ public class SeatServiceImpl implements SeatService {
         response.setCoachNumber(seat.getCoach().getCoachNumber());
         response.setSeatNumber(seat.getSeatNumber());
         response.setSeatType(seat.getSeatType());
-        response.setAvailable(seat.getAvailable());
-
+     
         return response;
     }
 }

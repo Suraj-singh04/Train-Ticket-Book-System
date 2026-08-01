@@ -29,8 +29,6 @@ public class Seat {
     @Column(nullable = false)
     private SeatType seatType;
 
-    @Column(nullable = false)
-    private Boolean available = true;
 
     public Seat(Coach coach,
                 Integer seatNumber,
@@ -39,6 +37,5 @@ public class Seat {
         this.coach = coach;
         this.seatNumber = seatNumber;
         this.seatType = seatType;
-        this.available = true;
     }
 }
