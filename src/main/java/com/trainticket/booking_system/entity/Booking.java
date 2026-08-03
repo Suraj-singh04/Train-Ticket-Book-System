@@ -1,56 +1,61 @@
 package com.trainticket.booking_system.entity;
 
-import jakarta.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-@Getter
-@Setter
 @Entity
 @Table(name = "bookings")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor 
 public class Booking {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID) // PNR
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String bookingId;
 
+    @Column(nullable = false, unique = true)
+    private String bookingReference;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @JoinColumn(name = "passenger_id", nullable = false)
+    private Passenger passenger;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "schedule_id", nullable = false)
     private Schedule schedule;
 
-    @Column(nullable = false)
-    private String fromStationCode;
-
-    @Column(nullable = false)
-    private String toStationCode;
-
-    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<TicketReservation> reservedSeats = new ArrayList<>();
-
-    @Column(nullable = false, precision = 10, scale = 2) // Good precision mapping for Postgres numeric type
-    private BigDecimal totalFare;
-
-    @Column(nullable = false)
-    private LocalDateTime bookingTimestamp;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "seat_id",nullable = true)
+    private Seat seat;
 
     @Enumerated(EnumType.STRING)
-    private BookingStatus status;
+    @Column(nullable = false)
+    private BookingStatus bookingStatus;
 
-    public enum BookingStatus { CONFIRMED, CANCELLED, FAILED }
+    @Column(nullable = false)
+    private LocalDateTime bookingTime;
 
-    protected Booking() {}
+    @Column(nullable = false)
+    private LocalDate travelDate;
 
-    @PrePersist
-    protected void onBooking() {
-        this.bookingTimestamp = LocalDateTime.now();
-    }
+    @Column(nullable = false)
+    private Double fare;
 }

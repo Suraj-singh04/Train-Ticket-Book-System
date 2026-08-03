@@ -11,7 +11,7 @@ import com.trainticket.booking_system.entity.Booking;
 import com.trainticket.booking_system.entity.Schedule;
 import com.trainticket.booking_system.entity.Seat;
 
-public interface BookingRepository extends JpaRepository<Booking, Long> {
+public interface BookingRepository extends JpaRepository<Booking, String> {
 
     @Query("""
         SELECT b.seat
